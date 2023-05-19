@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 const port = process.env.PORT || 5000;
@@ -28,7 +28,9 @@ const client = new MongoClient(uri, {
 });
 
 
-
+app.get('/',(req,res)=>{
+  res.send('Hello from Hero Haven');
+})
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -41,13 +43,11 @@ async function run() {
     
     console.log('haha')
 
-    app.get('/',(req,res)=>{
-      res.send('Hello from Hero Haven');
-    })
+    
 
     app.post('/add-toy',async(req,res)=>{
       const data = req.body;
-      console.log(data);
+      // console.log(data);
       const result = await toys.insertOne(data);
       res.send(result);
     })
@@ -57,7 +57,7 @@ async function run() {
       if(req.query?.email){
         query={userEmail:req.query.email}
       }
-      console.log('query : ',query);
+      // console.log('query : ',query);
       let result;
       if(query?.userEmail){
         result = await toys.find(query).toArray();
@@ -66,6 +66,12 @@ async function run() {
         result = await toys.find().toArray();
       }
       res.send(result || []);
+    })
+
+    app.get('/details/:id',async(req,res)=>{
+      const id = req.params.id;
+      const result = await toys.findOne({_id:new ObjectId(id)});
+      res.send(result);
     })
     
     
