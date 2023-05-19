@@ -53,10 +53,19 @@ async function run() {
     })
 
     app.get('/all-toys',async(req,res)=>{
-      const query= req.query;
+      let query= {};
+      if(req.query?.email){
+        query={userEmail:req.query.email}
+      }
       console.log('query : ',query);
-      const result = await toys.find().toArray();
-      res.send(result);
+      let result;
+      if(query?.userEmail){
+        result = await toys.find(query).toArray();
+      }
+      else{
+        result = await toys.find().toArray();
+      }
+      res.send(result || []);
     })
     
     
