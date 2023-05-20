@@ -95,24 +95,24 @@ async function run() {
       console.log(id);
       const result = await toys.deleteOne({ _id:new ObjectId(id) });
       console.log(result);
-      if (result.deletedCount === 1) {
-        res.send('Document deleted successfully');
-      } else {
-        res.status(404).send('Document not found');
-      }
+      res.send(result)
     });
 
     // Update a document
-    // app.put('/toys/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //     const updates = req.body;
-    //     const result = await toys.updateOne({ _id:new ObjectId(id) }, { $set: updates });
-    //     if (result.matchedCount === 1) {
-    //       res.send('Document updated successfully');
-    //     } else {
-    //       res.status(404).send('Document not found');
-    //     }
-    // });
+    app.get('/toys/:id', async (req,res)=>{
+      const id = req.params.id;
+      const result = await toys.findOne({_id:new ObjectId(id)});
+      // console.log(result)
+      res.send(result);
+    })
+    app.put('/toys/:id', async (req, res) => {
+      const id = req.params.id;
+        const updates = req.body;
+        // console.log(updates)
+        const result = await toys.updateOne({ _id:new ObjectId(id) }, { $set: updates });
+        // console.log(result);
+        res.send(result);
+    });
 
     
     
