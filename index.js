@@ -9,9 +9,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.listen(port,()=>{
-    console.log('listening from ',port);
-})
 
 
 const uri = `mongodb+srv://${process.env.SECRET_USER}:${process.env.SECRET_PASS}@cluster0.xhpmdyt.mongodb.net/?retryWrites=true&w=majority`;
@@ -28,22 +25,21 @@ const client = new MongoClient(uri, {
 });
 
 
-app.get('/',(req,res)=>{
-  res.send('Hello from Hero Haven');
-})
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
     // Send a ping to confirm a successful connection
 
     const database = client.db("heroHavenDB");
     const toys = database.collection("toys");
 
     
-    console.log('haha')
 
-    
+    app.get('/',(req,res)=>{
+      res.send('Hello from Hero Haven');
+    })
 
     app.post('/add-toy',async(req,res)=>{
       const data = req.body;
@@ -86,6 +82,7 @@ async function run() {
 }
 run().catch(console.dir);
 
+app.listen(port,()=>{
+  console.log('listening from ',port);
+})
 
-// hero-haven
-// vEN1vwS0LDiRC6Ni
