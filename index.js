@@ -49,22 +49,42 @@ async function run() {
     })
 
     app.get('/all-toys', async (req, res) => {
+      const { email, categoryLabel } = req.query;
       let query = {};
-      if (req.query?.email) {
-        query.userEmail = req.query.email;
-      } else if (req.query?.categoryLabel) {
-        query['category.label'] = req.query.categoryLabel;
+    
+      if (email) {
+        query.userEmail = email;
+      } else if (categoryLabel) {
+        query['category.label'] = categoryLabel;
       }
-      
+    
       let result;
+
+      console.log(query);
+    
       if (Object.keys(query).length > 0) {
         result = await toys.find(query).limit(20).toArray();
       } else {
         result = await toys.find().limit(20).toArray();
       }
-      
+    
       res.send(result || []);
     });
+    
+
+    app.get('/search/:toyName', async (req, res) => {
+      const searchString = req.params.toyName;
+      const searchWords = searchString.split(/\s+|-/).filter(Boolean).map(word => new RegExp(word, 'i'));
+      const query = { toyName: { $all: searchWords } };
+      
+      const result = await toys.find(query).sort({ _id: 1 }).limit(20).toArray();
+      res.send(result || []);
+    });
+    
+    
+    
+    
+    
 
 
     app.get('/all-toys/:toyName', async (req, res) => {
@@ -82,19 +102,14 @@ async function run() {
     
     
 
-    app.get('/details/:id',async(req,res)=>{
-      const id = req.params.id;
-      const result = await toys.findOne({_id:new ObjectId(id)});
-      res.send(result);
-    });
 
 
     // Delete a document
     app.delete('/toys/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+      // console.log(id);
       const result = await toys.deleteOne({ _id:new ObjectId(id) });
-      console.log(result);
+      // console.log(result);
       res.send(result)
     });
 
