@@ -36,11 +36,12 @@ async function run() {
     const toys = database.collection("toys");
 
     
-
+    // test purpose
     app.get('/',(req,res)=>{
       res.send('Hello from Hero Haven');
     })
 
+    // insert new toy
     app.post('/add-toy',async(req,res)=>{
       const data = req.body;
       // console.log(data);
@@ -48,6 +49,7 @@ async function run() {
       res.send(result);
     })
 
+    // get by email or category query
     app.get('/all-toys', async (req, res) => {
       const { email, categoryLabel } = req.query;
       let query = {};
@@ -72,6 +74,7 @@ async function run() {
     });
     
 
+    // search by name
     app.get('/search/:toyName', async (req, res) => {
       const searchString = req.params.toyName;
       const searchWords = searchString.split(/\s+|-/).filter(Boolean).map(word => new RegExp(word, 'i'));
@@ -86,7 +89,7 @@ async function run() {
     
     
 
-
+    // get single document
     app.get('/all-toys/:toyName', async (req, res) => {
       try {
         const toyName = req.params.toyName;
