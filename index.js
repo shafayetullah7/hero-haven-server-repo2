@@ -49,10 +49,15 @@ async function run() {
       res.send(result);
     })
 
-    // get by email or category query
+    // get by email or category query or/and sorted
     app.get('/all-toys', async (req, res) => {
       const { email, categoryLabel } = req.query;
+      let sort=0;
+      if(req.query?.sort){
+        sort = parseInt(req.query.sort);
+      }
       let query = {};
+      
     
       if (email) {
         query.userEmail = email;
@@ -61,11 +66,18 @@ async function run() {
       }
     
       let result;
+      // console.log(query);
 
       console.log(query);
+
     
       if (Object.keys(query).length > 0) {
-        result = await toys.find(query).limit(20).toArray();
+        if(sort!==0){
+          result = await toys.find(query).sort({price:sort}).limit(20).toArray();
+          
+        }else{
+          result = await toys.find(query).limit(20).toArray();
+        }
       } else {
         result = await toys.find().limit(20).toArray();
       }
